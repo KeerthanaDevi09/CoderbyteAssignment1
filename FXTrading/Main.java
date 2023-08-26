@@ -14,10 +14,10 @@ public class Main {
 			{
 				System.out.println("Enter customer Name:");
 				sc.nextLine();
-                String customerName = sc.nextLine();
+                		String customerName = sc.nextLine();
 
-                System.out.println("Enter Currency Pair:");
-                String currencyPair = sc.nextLine();
+                		System.out.println("Enter Currency Pair:");
+                		String currencyPair = sc.nextLine();
 
 				if(!currencyPair.equalsIgnoreCase("USDINR"))
 				{
@@ -53,9 +53,9 @@ public class Main {
 			else if(option==2)
 			{
 				System.out.println("TradeNo   Currency Pair   CustomerName   Amount      Rate");
-                for (BookTrade trade : trades) {
-                    System.out.println(trade.toString());
-                }
+                		for (BookTrade trade : trades) {
+                    			System.out.println(trade.toString());
+                		}
 			}
 			else if(option==3)
 			{
