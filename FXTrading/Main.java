@@ -22,7 +22,8 @@ public class Main {
 				if(!currencyPair.equalsIgnoreCase("USDINR"))
 				{
 					System.out.println("Invalid Currency Pair. Only USDINR is supported (e.g., USDINR)");
-					break;
+					System.out.println("Enter Currency Pair:");
+		            		currencyPair = sc.nextLine();
 				}
 				System.out.println("Enter Amount to be Transfer: ");
 				double amount=sc.nextInt();
