@@ -3,17 +3,19 @@ package com.keerthi.SpringProject;
 import java.util.HashMap;
 
 public class UserTransactionDetails {
-	private static int tradeNo;
-	private static String customerName;
-	private static String currencyPair;
-	private static double amountToTransfer;
+	private int tradeNo;
+	private String customerName;
+	private String currencyPair;
+	private double amountToTransfer;
 	private String rate;
-	private static double tranferredAmount=1;
-	private static String rateMessage;
-	private static String confirmTradeMessage;
+	private double tranferredAmount=1;
+	private String rateMessage;
+	private String confirmTradeMessage;
 	private String Confirm;
 	private static HashMap<String,Double> changeRate=new HashMap<>();
-	private static boolean flag=false;
+	private boolean flag=false;
+	private boolean bookOrCancle=false;
+	private boolean printRateOrNot=false;
 	
 	
 	public UserTransactionDetails() {
@@ -49,7 +51,7 @@ public class UserTransactionDetails {
 		this.customerName = customerName;
 	}
 
-	public static String getCurrencyPair() {
+	public String getCurrencyPair() {
 		return currencyPair;
 	}
 
@@ -73,7 +75,7 @@ public class UserTransactionDetails {
 		this.rate = rate;
 	}
 
-	public static double getTranferredAmount() {
+	public double getTranferredAmount() {
 		return tranferredAmount;
 	}
 
@@ -104,6 +106,15 @@ public class UserTransactionDetails {
 	public void setConfirm(String confirm) {
 		Confirm = confirm;
 	}
+	
+	public boolean isBookOrCancle() {
+		return bookOrCancle;
+	}
+
+	public boolean isPrintRateOrNot() {
+		return printRateOrNot;
+	}
+
 
 	@Override
 	public String toString() {
@@ -112,54 +123,68 @@ public class UserTransactionDetails {
 				+ rateMessage + ", confirmTradeMessage=" + confirmTradeMessage + "]";
 	}
 	
-	public static void bookTrade(UserTransactionDetails tradeDetail) {
+	public void bookTrade(UserTransactionDetails tradeDetail) {
 		
-		int usdToInr=(int) (amountToTransfer*66.0);
+		try {
 		
-		//to check valid currency pair
-		if(tradeDetail.getCurrencyPair().equalsIgnoreCase("usdinr"))
+			int usdToInr=(int) (getAmountToTransfer()*66.0);
+			
+			//to check valid currency pair
+			if(tradeDetail.getCurrencyPair().equalsIgnoreCase("usdinr"))
+			{
+				flag=true;
+			}
+			else
+			{
+				flag=false;
+			}
+			
+			tradeDetail.setTranferredAmount(usdToInr);
+			
+			//To print a rate message if customer want
+			if(!tradeDetail.getRate().equalsIgnoreCase("yes"))
+			{
+				printRateOrNot=false;
+				rateMessage="";
+			}
+			else
+			{
+				printRateOrNot=true;
+				rateMessage="\n"+ "You are transferring INR "+getTranferredAmount()+"to "+customerName;
+			}
+			
+			//To book a trade
+			if(!tradeDetail.getConfirm().equalsIgnoreCase("book"))
+			{
+				bookOrCancle=false;
+				confirmTradeMessage="Trade Cancled";
+			}
+			else
+			{
+				bookOrCancle=true;
+				confirmTradeMessage="Trade for USDINR has been booked with rate "+changeRate.get("USDINR")+", The amount of Rs."+getTranferredAmount()+" will be transferred in 2 working days to "+customerName+".";
+			}
+		}catch(Exception e)
 		{
-			flag=true;
-		}
-		else
-		{
-			flag=false;
-		}
-		
-		tradeDetail.setTranferredAmount(usdToInr);
-		
-		//To print a rate message if customer want
-		if(!tradeDetail.getRate().equalsIgnoreCase("yes"))
-		{
-			rateMessage="";
-		}
-		else
-		{
-			rateMessage="\n You are transferring INR "+getTranferredAmount()+"to "+customerName;
-		}
-		
-		//to book a trade
-		if(!tradeDetail.getConfirm().equalsIgnoreCase("book"))
-		{
-			confirmTradeMessage="";
-		}
-		else
-		{
-			confirmTradeMessage="Trade for USDINR has been booked with rate "+changeRate.get("USDINR")+", The amount of Rs."+getTranferredAmount()+" will be transferred in 2 working days to "+customerName+".";
-		}
-		
+			e.printStackTrace();
+		}	
 	}
+	
 	public String displayTrade()
 	{
-		if(flag) {
+		if(!flag)
+		{
+			return "Invalid Currency Pair";
+		}
+		else if(flag && bookOrCancle) {
 			return "Trade Booked \n"+"Trade Number "+ getTradeNo() + "\nCustomer Name: "+ customerName + "\nCurrencyPair: "+currencyPair+"\nAmount to Transafer: "+amountToTransfer+"\n"+rateMessage+"\n"+confirmTradeMessage;
 		}
-		return "Invalid Currency Pair";
-		
+		else if(flag && printRateOrNot && !bookOrCancle)
+		{
+			return rateMessage + "\n" +"Trade Cancle";
+		}
+		return "Trade Cancle";	
 	}
-	
-	
-
 }
 
 
