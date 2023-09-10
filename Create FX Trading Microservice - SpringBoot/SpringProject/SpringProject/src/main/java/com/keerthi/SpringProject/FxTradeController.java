@@ -18,7 +18,8 @@ public class FxTradeController {
 	@PostMapping("/book_trade")
 	public String bookTrades(@RequestBody UserTransactionDetails tradeDetail) {
 		tradeDetail.bookTrade(tradeDetail);
-		tradeDetails.add(tradeDetail);
+		if(tradeDetail.isBookOrCancle());
+			tradeDetails.add(tradeDetail);
 		return "Trade Received : "+tradeDetail.displayTrade().toString();
 		
 	}
